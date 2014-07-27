@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/ANetPcap.iml" filepath="$PROJECT_DIR$/ANetPcap.iml" />
+      <module fileurl="file://$PROJECT_DIR$/anetpcap/anetpcap.iml" filepath="$PROJECT_DIR$/anetpcap/anetpcap.iml" />
+    </modules>
+  </component>
+</project>
+
