@@ -20,20 +20,10 @@ public class VolteESP extends JHeader {
     static {
         try {
             JRegistry.register(VolteESP.class);
-            JRegistry.addBindings(VolteESP.class);
+            JRegistry.addBindings(new Bindings());
         } catch (RegistryHeaderErrors registryHeaderErrors) {
             registryHeaderErrors.printStackTrace();
         }
-    }
-
-    @Bind(to = Ip4.class)
-    public static boolean bindToIp4(JPacket packet, Ip4 ip4) {
-        return ip4.type() == 50;
-    }
-
-    @Bind(from = Tcp.class, to = VolteESP.class)
-    public static boolean bindFromTcp(JPacket packet, VolteESP esp) {
-        return esp.nextheader() == 6;
     }
 
     @Field(offset = 0, length = 32, format = "%d", description = "security parameter index")
@@ -89,5 +79,19 @@ public class VolteESP extends JHeader {
     @Override
     public int getPostfixLength() {
         return 12 + 2 + padsize();
+    }
+
+    private static class Bindings {
+
+        @Bind(from = VolteESP.class, to = Ip4.class)
+        public boolean bindToIp4(JPacket packet, Ip4 ip4) {
+            return ip4.type() == 50;
+        }
+
+        @Bind(from = Tcp.class, to = VolteESP.class)
+        public boolean bindFromTcpToVolteESP(JPacket packet, VolteESP esp) {
+            return esp.nextheader() == 6;
+        }
+
     }
 }

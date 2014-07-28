@@ -1,1 +1,1 @@
-include ':anetpcap'
+include ':anetpcap', ':sample'
