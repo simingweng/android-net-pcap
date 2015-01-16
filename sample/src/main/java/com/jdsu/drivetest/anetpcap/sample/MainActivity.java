@@ -11,12 +11,18 @@ import android.widget.Button;
 import com.jdsu.drivetest.anetpcap.VolteESP;
 import com.stericson.RootTools.RootTools;
 
+import org.jnetpcap.JBufferHandler;
 import org.jnetpcap.Pcap;
+import org.jnetpcap.PcapHeader;
+import org.jnetpcap.PcapIf;
+import org.jnetpcap.nio.JBuffer;
 import org.jnetpcap.packet.JPacket;
 import org.jnetpcap.packet.JPacketHandler;
 import org.jnetpcap.protocol.lan.SLL;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class MainActivity extends Activity {
@@ -45,6 +51,62 @@ public class MainActivity extends Activity {
                     }
                 }, "Simon");
                 pcap.close();
+            }
+        });
+
+        Button liveButton = (Button) findViewById(R.id.liveButton);
+        liveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                List<PcapIf> alldevs = new ArrayList<>(); // Will be filled with NICs
+                StringBuilder errbuf = new StringBuilder(); // For any error msgs
+
+                /***************************************************************************
+                 * First get a list of devices on this system
+                 **************************************************************************/
+                int r = Pcap.findAllDevs(alldevs, errbuf);
+                if (r == Pcap.NOT_OK || alldevs.isEmpty()) {
+                    Log.e(TAG, String.format("Can't read list of devices, error is %s", errbuf.toString()));
+                    return;
+                }
+
+                Log.i(TAG, "Network devices found:");
+
+                int i = 0;
+                for (PcapIf device : alldevs) {
+                    String description =
+                            (device.getDescription() != null) ? device.getDescription()
+                                    : "No description available";
+                    Log.i(TAG, String.format("#%d: %s [%s]\n", i++, device.getName(), description));
+                }
+
+                PcapIf device = alldevs.get(0); // We know we have atleast 1 device
+                Log.i(TAG, String.format("\nChoosing '%s' on your behalf:\n",
+                        (device.getDescription() != null) ? device.getDescription()
+                                : device.getName()));
+
+                /***************************************************************************
+                 * Second we open up the selected device
+                 **************************************************************************/
+                int snaplen = 64 * 1024;           // Capture all packets, no trucation
+                int flags = Pcap.MODE_PROMISCUOUS; // capture all packets
+                int timeout = 10 * 1000;           // 10 seconds in millis
+                Pcap pcap = Pcap.openLive(device.getName(), snaplen, flags, timeout, errbuf);
+
+                if (pcap == null) {
+                    Log.e(TAG, "Error while opening device for capture: "
+                            + errbuf.toString());
+                    return;
+                }
+
+                JBufferHandler<String> jBufferHandler = new JBufferHandler<String>() {
+                    @Override
+                    public void nextPacket(PcapHeader header, JBuffer buffer, String user) {
+                        Log.i(TAG, String.format("received packet length %d", header.caplen()));
+                    }
+                };
+
+                pcap.loop(10, jBufferHandler, "simon");
             }
         });
     }

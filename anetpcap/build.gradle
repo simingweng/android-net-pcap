@@ -1,26 +1,26 @@
 apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion 19
-    buildToolsVersion "20.0.0"
-
+    compileSdkVersion 21
+    buildToolsVersion '21.1.2'
     defaultConfig {
-        applicationId "com.jdsu.drivetest.anetpcap"
         minSdkVersion 16
-        targetSdkVersion 19
+        targetSdkVersion 21
         versionCode 1
         versionName "1.0"
     }
     buildTypes {
         release {
-            runProguard false
+            minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+    }
+    productFlavors {
     }
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile fileTree(include: ['*.jar'], dir: 'libs')
 }
 
 apply from: 'https://bitbucket.org/simingweng/gradle-mvn-push/raw/4995c57cb8ab48e4cfdfe71757b2c7e2bd89ab7d/gradle-mvn-push.gradle'

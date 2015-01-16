@@ -3,7 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/ANetPcap.iml" filepath="$PROJECT_DIR$/ANetPcap.iml" />
-      <module fileurl="file://$PROJECT_DIR$/anetpcap/anetpcap.iml" filepath="$PROJECT_DIR$/anetpcap/anetpcap.iml" />
+      <module fileurl="file://$PROJECT_DIR$/anetpcap/anetpcap-anetpcap.iml" filepath="$PROJECT_DIR$/anetpcap/anetpcap-anetpcap.iml" />
       <module fileurl="file://$PROJECT_DIR$/sample/sample.iml" filepath="$PROJECT_DIR$/sample/sample.iml" />
     </modules>
   </component>
